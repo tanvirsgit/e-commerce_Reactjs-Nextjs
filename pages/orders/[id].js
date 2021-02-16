@@ -1,31 +1,32 @@
 import { useRouter } from "next/router";
 import { order } from "../../orderdata";
 
-const OrderDetails = () => {
+const OrderDetails = ({ o }) => {
   const id = useRouter().query.id;
-  let o = order.filter((ord, index) => {
+  const or = order.filter((ord, index) => {
     if (id == index) return ord;
   });
 
-  console.log(o);
-
+  console.log(order);
+  const currentOrder = or[0];
+  if (!currentOrder) return <div>No orders</div>;
   return (
-    o[0] && (
+    currentOrder && (
       <div className="container">
         <div className="row">
           <div className="col-md-2"></div>
           <div className="col-md-2">
             <h2>Ordered by</h2>
             <hr />
-            <p>Name: {o[0].user.name}</p>
-            <p>Phone: {o[0].user.phone}</p>
-            <p>Address: {o[0].user.address}</p>
+            <p>Name: {currentOrder.user.name}</p>
+            <p>Phone: {currentOrder.user.phone}</p>
+            <p>Address: {currentOrder.user.address}</p>
           </div>
           <div className="col-md-4">
             <h2>Products details</h2>
             <hr />
             <div>
-              {o[0].newCart.map((c) => {
+              {currentOrder.newCart.map((c) => {
                 return (
                   <div>
                     <p>Product name: {c.name}</p>
@@ -36,7 +37,7 @@ const OrderDetails = () => {
                 );
               })}
             </div>
-            <h3>Total Price: {o[0].total}</h3>
+            <h3>Total Price: {currentOrder.total}</h3>
           </div>
         </div>
       </div>
@@ -45,3 +46,18 @@ const OrderDetails = () => {
 };
 
 export default OrderDetails;
+
+export async function getServerSideProps(context) {
+
+  const id = parseInt(context.params.id);
+  const or = order.filter((ord, index) => {
+    if (id === index) return ord;
+  });
+  const o = { ...or[0] };
+
+  return {
+    props: {
+      o,
+    },
+  };
+}

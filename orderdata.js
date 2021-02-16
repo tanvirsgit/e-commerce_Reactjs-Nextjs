@@ -1,5 +1,5 @@
-export let order =[];
+export const order = [];
 
-export function addOrder({user,newCart,total,date}){
-    order.push({user,newCart,total,date});
+export function addOrder({ user, newCart, total, date }) {
+  order.push({ user, newCart, total, date });
 }

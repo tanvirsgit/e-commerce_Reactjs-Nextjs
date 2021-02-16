@@ -61,12 +61,11 @@ const product = ({ p }) => {
 export default product;
 
 export const getStaticProps = async (context) => {
-  const res = await fetch(
-    "http://localhost:3000/api/products/" + context.params.id
-  );
+ 
+  const id= parseInt(context.params.id);
+  const product = products.filter(product=> product.id == id);
 
-  const p = await res.json();
-
+  const p= product[0];
   return {
     props: {
       p,
@@ -75,14 +74,14 @@ export const getStaticProps = async (context) => {
 };
 
 export const getStaticPaths = async () => {
-  const res = await fetch("http://localhost:3000/api/products");
-
-  const data = await res.json();
+  const data = products;
   const ids = data.map((d) => d.id);
   const paths = ids.map((id) => ({ params: { id: id.toString() } }));
+  const a = [];
 
   return {
     paths,
     fallback: false,
   };
 };
+

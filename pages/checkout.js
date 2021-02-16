@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useContext, useState } from "react";
 import { CartContext } from "../context/CartWrapper";
 import { minifyCart } from "./cart";
-import { addOrder } from "../orderdata";
+import { addOrder, order } from "../orderdata";
 
 const Checkout = () => {
   const [name, setName] = useState("");
@@ -19,12 +19,12 @@ const Checkout = () => {
     setCart([]);
     let total = 0;
     total = getTotalPrice(newCart);
-    console.log("Total:" + total);
     let date = new Date().toUTCString();
     addOrder({ user, newCart, total, date });
     localStorage.setItem("user", JSON.stringify(user));
+    let lastOrder = order.length - 1;
     setTimeout(() => {
-      router.push("/orders");
+      router.push("/orders/" + lastOrder);
     }, 1000);
   };
 
@@ -70,6 +70,7 @@ export default Checkout;
 
 const getTotalPrice = (cart) => {
   let total = 0;
+
   for (let i = 0; i < cart.length; i++)
     total += cart[i].quantity * cart[i].price;
   return total;
